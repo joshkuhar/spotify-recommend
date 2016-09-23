@@ -107,6 +107,13 @@ Spotify.prototype.search = function(name) {
     });
     ajax.done(this.onSearchDone.bind(this));
 };
+Spotify.prototype.onSearchClicked = function() {
+    var name = this.searchBox.val();
+    this.search(name);
+    if(!this.result.hasClass('transparent')){
+        this.result.toggleClass('transparent');
+    }
+};
 Spotify.prototype.onSearchDone = function(artist) {
     var result = $(this.artistTemplate(artist));
     this.result.empty().append(result);

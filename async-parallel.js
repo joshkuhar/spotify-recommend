@@ -16,7 +16,7 @@ var countLines = function(file, cb) {
     });
 };
 
-
+// Does files have to be an array?
 var onReadDirComplete = function(err, files) {
     if (err) throw err;
 

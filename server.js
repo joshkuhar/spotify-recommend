@@ -71,24 +71,20 @@ app.get('/search/:name', function(req, res) {
             related.on('end', function(data){
                 artist.related = data.artists;
 
-
                 var count = 0;
                 var completed = artist.related.length;
 
-                for (var x = 0; x < completed; x++){
-                    var topId = artist.related[0].id;
-
-                }
-
-                
-                    var topId = artist.related[0].id;
-
-                    var topTracks = new getTop(topId);
+                artist.related.forEach(function(argument){
+                    var topTracks = new getTop(argument.id);
                     topTracks.on('end', function(topSongs){
-                        item.tracks = topSongs.tracks;
-                        
+                        argument.tracks = topSongs.tracks;
+                        count++;
+                        if (count === completed) {
+                            res.json(artist);
+                        }
+                    });
                 });
-            });
+            }); 
     });
     
 

@@ -22,7 +22,6 @@ var getFromApi = function(endpoint, args) {
 };
 
 //second call to api below
-
 var getRelated = function( id ) {
     var emitter = new events.EventEmitter();
     unirest.get('https://api.spotify.com/v1/artists/' + id + '/related-artists')
@@ -36,26 +35,60 @@ var getRelated = function( id ) {
     return emitter;
 };
 
+//third call to api for top tracks
+var getTop = function( id ) {
+    var emitter = new events.EventEmitter();
+    unirest.get('https://api.spotify.com/v1/artists/' + id + '/top-tracks')
+    .qs({country: 'us'})
+    .end(function(response){
+        if (response.ok) {
+            emitter.emit('end', response.body);
+        } else {
+            emitter.emit('error', response.code);
+        }
+    });
+    return emitter;
+};
+
+
 var app = express();
 app.use(express.static('public'));
 
 
-// GET https://api.spotify.com/v1/artists/{id}/related-artists
+// GET https://api.spotify.com/v1/artists/{id}/related-artists 
 app.get('/search/:name', function(req, res) {
     var searchReq = getFromApi('search', {
         q: req.params.name,
         limit: 1,
         type: 'artist'
     });
+    //emit artist
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         var id = artist.id;
-        var related = getRelated(id);
-        
-        related.on('end', function(data){
-            artist.related = data.artists;
-            res.json(artist);
-        });
+            //emit related artists
+            var related = getRelated(id);
+            related.on('end', function(data){
+                artist.related = data.artists;
+
+
+                var count = 0;
+                var completed = artist.related.length;
+
+                for (var x = 0; x < completed; x++){
+                    var topId = artist.related[0].id;
+
+                }
+
+                
+                    var topId = artist.related[0].id;
+
+                    var topTracks = new getTop(topId);
+                    topTracks.on('end', function(topSongs){
+                        item.tracks = topSongs.tracks;
+                        
+                });
+            });
     });
     
 

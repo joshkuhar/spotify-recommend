@@ -51,12 +51,11 @@ app.get('/search/:name', function(req, res) {
         var artist = item.artists.items[0];
         var id = artist.id;
         var related = getRelated(id);
-        related.on('end', function(item){
-            for (var artistNumber in item.artists){
-                console.log(item.artists[artistNumber].name);
-            }
+        
+        related.on('end', function(data){
+            artist.related = data.artists;
+            res.json(artist);
         });
-        // res.json(artist);
     });
     
 

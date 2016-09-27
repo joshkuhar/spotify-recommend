@@ -6,3 +6,17 @@ function x(a, b){
 };
 
 console.log(x(a,b));
+
+// function foo(){
+// 	throw new Error('oops!');
+// };
+
+// function bar(){
+// 	foo();
+// };
+
+// function baz(){
+// 	bar();
+// };
+
+// baz();
